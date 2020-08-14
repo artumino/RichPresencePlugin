@@ -17,12 +17,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     else
         gameName = L"Test App";
 
+
+    const wchar_t* parentCommandLinePart = L"-pid:";
+    commandLineMatch = wcsstr(GetCommandLine(), parentCommandLinePart);
+    if(commandLineMatch)
+        parentId = _wtoi(&commandLineMatch[wcslen(parentCommandLinePart)]);
+
     const wchar_t* childCommandLinePart = L"-child:";
     commandLineMatch = wcsstr(GetCommandLine(), childCommandLinePart);
     if (commandLineMatch)
     {
         parentId = _wtoi(&commandLineMatch[wcslen(childCommandLinePart)]);
-        
         test = new RichPresenceComponent(parentId, gameName.c_str());
         test->InitializeGameChild();
     }
@@ -37,8 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         }
         else
         {
-
-            test = new RichPresenceComponent(NULL, gameName.c_str());
+            test = new RichPresenceComponent(parentId, gameName.c_str());
             test->InitializeMain();
         }
     }

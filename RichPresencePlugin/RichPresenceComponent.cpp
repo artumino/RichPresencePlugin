@@ -6,7 +6,7 @@
 #include <codecvt>
 #include <string>
 
-#define REVIVE_CLOSED_HANDLE_NAME TEXT("Revive\\CloseEvent")
+#define REVIVE_CLOSED_HANDLE_NAME TEXT("Revive_ClosedEvent")
 
 RichPresenceComponent::RichPresenceComponent(UINT parentId, const wchar_t* gameName)
 	: m_parentAppID(218),
@@ -28,15 +28,14 @@ RichPresenceComponent::~RichPresenceComponent()
 
 void RichPresenceComponent::InitializeMain()
 {
-	m_hParentClosedEvent = OpenEvent(
+	m_hParentClosedEvent = CreateEvent(
 		NULL,               // default security attributes
 		TRUE,
+		FALSE,
 		REVIVE_CLOSED_HANDLE_NAME  // object name
 	);
 
 	SetEnvironmentVariable(L"SteamAppId", L"218");
-
-	std::wcout << (m_parentProcID != NULL ? "This is the child process" : "This is the parent process") << "\n";
 
 	/*_unlink("steam_appid.txt");*/
 
@@ -55,11 +54,15 @@ void RichPresenceComponent::InitializeMain()
 		fclose(f);
 	}*/
 
-	if (m_hParentClosedEvent != INVALID_HANDLE_VALUE)
+	//Wait for parent to end
+	if (m_parentProcID)
 	{
-		WaitForSingleObject(m_hParentClosedEvent, INFINITE);
-		CloseHandle(m_hParentClosedEvent);
+		HANDLE parentHandle = OpenProcess(SYNCHRONIZE, FALSE, m_parentProcID);
+		WaitForSingleObject(parentHandle, INFINITE);
 	}
+
+	SetEvent(m_hParentClosedEvent);
+	CloseHandle(m_hParentClosedEvent);
 }
 
 void RichPresenceComponent::InitializeGameParent()
@@ -79,8 +82,8 @@ void RichPresenceComponent::InitializeGameParent()
 void RichPresenceComponent::InitializeGameChild()
 {
 	m_hParentClosedEvent = OpenEvent(SYNCHRONIZE,
-		true,
-		TEXT("Revive_RichClosedEvent"));
+		TRUE,
+		REVIVE_CLOSED_HANDLE_NAME);
 
 	HANDLE processHandle = OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, FALSE, m_parentProcID);
 	if (processHandle != INVALID_HANDLE_VALUE)
