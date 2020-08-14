@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{8f2f5699-4cf3-46c8-902b-9f2c00e6ad20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{c8ddc4ac-2a73-4073-adff-1eb50cf05530}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RichPresenceComponent.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="RichPresencePlugin.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RichPresenceComponent.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyValuesBuilder.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

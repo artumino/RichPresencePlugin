@@ -1,0 +1,6 @@
+[submodule "Externals/open-steamworks"]
+	path = Externals/open-steamworks
+	url = https://github.com/artumino/open-steamworks.git
+[submodule ".\\Externals\\open-steamworks\\"]
+	url = https://github.com/artumino/open-steamworks.git
+	branch = master
