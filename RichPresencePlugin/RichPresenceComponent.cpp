@@ -6,7 +6,7 @@
 #include <codecvt>
 #include <string>
 
-#define REVIVE_CLOSED_HANDLE_NAME TEXT("Revive_RichClosedEvent")
+#define REVIVE_CLOSED_HANDLE_NAME TEXT("Revive\\CloseEvent")
 
 RichPresenceComponent::RichPresenceComponent(UINT parentId, const wchar_t* gameName)
 	: m_parentAppID(218),
@@ -28,10 +28,9 @@ RichPresenceComponent::~RichPresenceComponent()
 
 void RichPresenceComponent::InitializeMain()
 {
-	m_hParentClosedEvent = CreateEvent(
+	m_hParentClosedEvent = OpenEvent(
 		NULL,               // default security attributes
-		TRUE,               // manual-reset event
-		FALSE,              // initial state is nonsignaled
+		TRUE,
 		REVIVE_CLOSED_HANDLE_NAME  // object name
 	);
 
@@ -56,9 +55,9 @@ void RichPresenceComponent::InitializeMain()
 		fclose(f);
 	}*/
 
-	if (WaitMessage())
+	if (m_hParentClosedEvent != INVALID_HANDLE_VALUE)
 	{
-		SetEvent(m_hParentClosedEvent);
+		WaitForSingleObject(m_hParentClosedEvent, INFINITE);
 		CloseHandle(m_hParentClosedEvent);
 	}
 }
